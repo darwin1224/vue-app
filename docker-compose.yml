@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - ${VUE_PORT}:${VUE_PORT}
+    tty: true
+    restart: always
+    networks:
+      - app
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    volumes:
+      - ./:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - ${NGINX_PORT}:${NGINX_PORT}
+    depends_on:
+      - frontend
+    tty: true
+    restart: always
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
