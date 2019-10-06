@@ -6,10 +6,13 @@ import App from './App.vue';
 import router from './routers';
 import store from './stores';
 import './registerServiceWorker';
+import { VueAxios } from '@/plugins/VueAxios';
 
 Vue.config.productionTip = false;
 
-new Vue({
+Vue.use(VueAxios);
+
+export default new Vue({
   router,
   store,
   render: h => h(App)
