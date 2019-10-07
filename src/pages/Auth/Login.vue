@@ -1,12 +1,8 @@
 <template>
   <div>
     <form @submit.prevent="onLogin">
-      <input type="text" v-model="auth.username" placeholder="Enter Username" />
-      <input
-        type="password"
-        v-model="auth.password"
-        placeholder="Enter Password"
-      />
+      <input type="text" v-model="login.username" placeholder="Enter Username" />
+      <input type="password" v-model="login.password" placeholder="Enter Password" />
       <input type="submit" value="Login" />
     </form>
   </div>
@@ -15,10 +11,16 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { AuthModel } from '@/types/models';
+import { Dispatch } from 'vuex';
 
 @Component
 export default class Login extends Vue {
-  private auth: AuthModel = {
+  /**
+   * Login states
+   *
+   * @type {AuthModel}
+   */
+  private login: AuthModel = {
     username: '',
     password: ''
   };
@@ -26,13 +28,14 @@ export default class Login extends Vue {
   /**
    * Process login
    *
-   * @returns {Promise<void>}
+   * @returns {Promise<Dispatch>}
    */
-  public async onLogin(): Promise<void> {
-    const { data } = await this.$http.post('http://localhost:3000/auth/login', {
-      ...this.auth
-    });
-    console.log(data);
+  public async onLogin(): Promise<Dispatch> {
+    try {
+      return await this.$store.dispatch('Auth/login', { ...this.login });
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 }
 </script>
