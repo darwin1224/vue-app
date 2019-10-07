@@ -11,7 +11,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { AuthModel } from '@/types/models';
-import { Dispatch } from 'vuex';
 
 @Component
 export default class Login extends Vue {
@@ -28,11 +27,12 @@ export default class Login extends Vue {
   /**
    * Process login
    *
-   * @returns {Promise<Dispatch>}
+   * @returns {Promise<void>}
    */
-  public async onLogin(): Promise<Dispatch> {
+  public async onLogin(): Promise<void> {
     try {
-      return await this.$store.dispatch('Auth/login', { ...this.login });
+      await this.$store.dispatch('Auth/login', { ...this.login });
+      this.$router.push({ name: 'PostList' });
     } catch (err) {
       throw new Error(err);
     }
