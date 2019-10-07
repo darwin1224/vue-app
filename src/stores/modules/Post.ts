@@ -1,10 +1,11 @@
 import _Vue from 'vue';
+import vm from '@/main';
 import { ActionTree, GetterTree, MutationTree, Module, ActionContext } from 'vuex';
 import { PostState, RootState } from '@/types/stores';
-import { PostModel } from '@/types/models';
+import { PostModel, ObjectId } from '@/types/models';
 import { GET_POST } from '../getter-types';
-import { SET_POST, SET_POST_BY_ID } from '../mutation-types';
-import { getAllPost, getPostById } from '../action-types';
+import { SET_POST, SET_POST_BY_ID, INSERT_PORT, DELETE_POST } from '../mutation-types';
+import { getAllPost, getPostById, insertPost, deletePost } from '../action-types';
 
 /**
  * State lists
@@ -53,7 +54,7 @@ const mutations: MutationTree<PostState> = {
   },
 
   /**
-   * Set the payload the post list by id
+   * Set the payload to the post list by id
    *
    * @param {PostState} state
    * @param {PostModel[]} payload
@@ -61,6 +62,32 @@ const mutations: MutationTree<PostState> = {
    */
   [SET_POST_BY_ID]: (state: PostState, payload: PostModel[]): PostModel[] => {
     return (state.list = payload);
+  },
+
+  /**
+   * Insert the payload to the post list
+   *
+   * @param {PostState} state
+   * @param {PostModel} payload
+   * @returns {PostModel[] | undefined}
+   */
+  [INSERT_PORT]: (state: PostState, payload: PostModel): PostModel[] | undefined => {
+    return (state.list = state.list && state.list.concat(payload));
+  },
+
+  /**
+   * Delete according the id given from the post list
+   *
+   * @param {PostState} state
+   * @param {ObjectId} id
+   * @returns {PostModel[] | undefined}
+   */
+  [DELETE_POST]: (state: PostState, id: ObjectId): PostModel[] | undefined => {
+    return (state.list =
+      state.list &&
+      state.list.filter(item => {
+        return item._id !== id;
+      }));
   }
 };
 
@@ -74,6 +101,7 @@ const actions: ActionTree<PostState, RootState> = {
    * Get all post data
    *
    * @param {ActionContext<PostState, RootState>} context.commit
+   * @param {_Vue} vm
    * @returns {Promise<PostModel>}
    */
   async [getAllPost]({ commit }: ActionContext<PostState, RootState>, vm: _Vue): Promise<PostModel> {
@@ -83,7 +111,7 @@ const actions: ActionTree<PostState, RootState> = {
           Authorization: localStorage.getItem('API_TOKEN')
         }
       });
-      commit('SET_POST', data);
+      commit(SET_POST, data);
       return data;
     } catch (err) {
       return err;
@@ -94,12 +122,54 @@ const actions: ActionTree<PostState, RootState> = {
    * Get post data by id
    *
    * @param {ActionContext<PostState, RootState>} context.commit
+   * @param {_Vue} vm
    * @returns {Promise<PostModel>}
    */
   async [getPostById]({ commit }: ActionContext<PostState, RootState>, vm: _Vue): Promise<PostModel> {
     try {
       const { data } = await vm.$http.get('/post/1');
-      commit('SET_POST_BY_ID', data);
+      commit(SET_POST_BY_ID, data);
+      return data;
+    } catch (err) {
+      return err;
+    }
+  },
+
+  /**
+   * Insert data
+   *
+   * @param {ActionContext<PostState, RootState>} context.commit
+   * @returns {Promise<PostModel>}
+   */
+  async [insertPost]({ commit }: ActionContext<PostState, RootState>, payload: PostModel): Promise<PostModel> {
+    try {
+      const { data } = await vm.$http.post('/post', payload, {
+        headers: {
+          Authorization: localStorage.getItem('API_TOKEN')
+        }
+      });
+      commit(INSERT_PORT, data);
+      return data;
+    } catch (err) {
+      return err;
+    }
+  },
+
+  /**
+   * Delete data by id
+   *
+   * @param {ActionContext<PostState, RootState>} context.commit
+   * @param {ObjectId} id
+   * @returns {Promise<PostModel>}
+   */
+  async [deletePost]({ commit }: ActionContext<PostState, RootState>, id: ObjectId): Promise<PostModel> {
+    try {
+      const { data } = await vm.$http.delete(`/post/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem('API_TOKEN')
+        }
+      });
+      commit(DELETE_POST, id);
       return data;
     } catch (err) {
       return err;
