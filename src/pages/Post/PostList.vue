@@ -1,16 +1,15 @@
 <template>
   <div>
-    <h1>{{ message }}</h1>
+    <b-table striped hover :items="posts"></b-table>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { Dispatch } from 'vuex';
 
 @Component
 export default class PostList extends Vue {
-  private message: string = 'Hello World';
-
   /**
    * Post state
    *
@@ -32,12 +31,11 @@ export default class PostList extends Vue {
   /**
    * Get all data
    *
-   * @returns {Promise<void>}
+   * @returns {Promise<Dispatch>}
    */
-  public async getAll(): Promise<void> {
+  public async getAll(): Promise<Dispatch> {
     try {
-      const data = await this.$store.dispatch('Post/getAllPost');
-      console.log(data);
+      return await this.$store.dispatch('Post/getAllPost', this);
     } catch (err) {
       throw new Error(err);
     }
