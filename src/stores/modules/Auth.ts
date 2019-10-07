@@ -1,8 +1,9 @@
-import axios from 'axios';
-import { ActionTree, GetterTree, MutationTree, Module } from 'vuex';
+import vm from '@/main';
+import { ActionTree, MutationTree, Module, ActionContext } from 'vuex';
 import { AuthState, RootState } from '@/types/stores';
-import { AuthModel } from '@/types/models';
+import { AuthModel, Token } from '@/types/models';
 import { login, register } from '../action-types';
+import { SET_TOKEN } from '../mutation-types';
 
 /**
  * State lists
@@ -18,7 +19,14 @@ const state: AuthState = {
   auth: {
     username: '',
     password: ''
-  }
+  },
+
+  /**
+   * API token
+   *
+   * @type {string}
+   */
+  token: localStorage.getItem('API_TOKEN') || undefined
 };
 
 /**
@@ -26,7 +34,18 @@ const state: AuthState = {
  *
  * @type {MutationTree<AuthState>}
  */
-const mutations: MutationTree<AuthState> = {};
+const mutations: MutationTree<AuthState> = {
+  /**
+   * Set the token from api
+   *
+   * @param {AuthState} state
+   * @param {string} payload
+   * @returns {string | undefined}
+   */
+  [SET_TOKEN]: (state: AuthState, payload?: string): string | undefined => {
+    return (state.token = payload);
+  }
+};
 
 /**
  * Action lists
@@ -37,31 +56,35 @@ const actions: ActionTree<AuthState, RootState> = {
   /**
    * Login the user
    *
-   * @param {any} context.commit
+   * @param {ActionContext<AuthState, RootState>} context.commit
    * @param {AuthModel} payload
-   * @returns {Promise<void>}
+   * @returns {Promise<Token>}
    */
-  async [login]({ commit }: any, payload: AuthModel): Promise<void> {
-    const { data } = await axios.post(
-      'http://localhost:3000/auth/login',
-      payload
-    );
-    return data;
+  async [login]({ commit }: ActionContext<AuthState, RootState>, payload: AuthModel): Promise<Token> {
+    try {
+      const { data } = await vm.$http.post('/auth/login', payload);
+      localStorage.setItem('API_TOKEN', data.token);
+      commit(SET_TOKEN, data.token);
+      return data;
+    } catch (err) {
+      return err;
+    }
   },
 
   /**
    * Register the user
    *
-   * @param {any} context.commit
+   * @param {ActionContext<AuthState, RootState>} context.commit
    * @param {AuthModel} payload
-   * @returns {Promise<void>}
+   * @returns {Promise<AuthModel>}
    */
-  async [register]({ commit }: any, payload: AuthModel): Promise<void> {
-    const { data } = await axios.post(
-      'http://localhost:3000/auth/register',
-      payload
-    );
-    return data;
+  async [register]({ commit }: ActionContext<AuthState, RootState>, payload: AuthModel): Promise<AuthModel> {
+    try {
+      const { data } = await vm.$http.post('/auth/register', payload);
+      return data;
+    } catch (err) {
+      return err;
+    }
   }
 };
 
