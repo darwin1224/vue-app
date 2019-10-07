@@ -6,7 +6,7 @@ import App from './App.vue';
 import router from './routers';
 import store from './stores';
 import './registerServiceWorker';
-import { VueAxios } from '@/plugins/VueAxios';
+import VueAxios from '@/plugins/VueAxios';
 
 Vue.config.productionTip = false;
 
