@@ -3,6 +3,9 @@
  */
 export const getAllPost = 'getAllPost';
 export const getPostById = 'getPostById';
+export const insertPost = 'insertPost';
+export const updatePost = 'updatePost';
+export const deletePost = 'deletePost';
 
 /**
  * Auth action types
