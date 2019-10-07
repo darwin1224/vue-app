@@ -42,3 +42,15 @@ export interface AuthModel {
    */
   password?: string;
 }
+
+/**
+ * Token model
+ */
+export interface Token {
+  /**
+   * API token
+   *
+   * @type {string}
+   */
+  token?: string;
+}
