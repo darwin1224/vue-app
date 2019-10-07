@@ -14,7 +14,7 @@ export interface PostState {
    *
    * @type {PostModel[]}
    */
-  list: PostModel[];
+  list?: PostModel[];
 }
 
 /**
@@ -26,5 +26,12 @@ export interface AuthState {
    *
    * @type {AuthModel}
    */
-  auth: AuthModel;
+  auth?: AuthModel;
+
+  /**
+   * API token
+   *
+   * @type {string}
+   */
+  token?: string;
 }
