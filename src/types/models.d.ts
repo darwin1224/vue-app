@@ -1,13 +1,25 @@
 /**
+ * Object Id type
+ */
+export type ObjectId = string | number | null | undefined;
+
+/**
  * Post model
  */
 export interface PostModel {
+  /**
+   * Object ID field
+   *
+   * @type {ObjectId}
+   */
+  _id?: ObjectId;
+
   /**
    * Title field
    *
    * @type {string}
    */
-  title: string;
+  title?: string;
 
   /**
    * Body field
