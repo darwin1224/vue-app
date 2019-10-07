@@ -3,6 +3,7 @@ import Router, { RouteConfig, RouterOptions, RouterMode } from 'vue-router';
 import Login from '@/pages/Auth/Login.vue';
 import Register from '@/pages/Auth/Register.vue';
 import PostList from '@/pages/Post/PostList.vue';
+import PostForm from '@/pages/Post/PostForm.vue';
 
 Vue.use(Router);
 
@@ -33,6 +34,11 @@ const routes: RouteConfig[] = [
     path: '/',
     name: 'PostList',
     component: PostList
+  },
+  {
+    path: '/post/create',
+    name: 'PostForm',
+    component: PostForm
   }
 ];
 
