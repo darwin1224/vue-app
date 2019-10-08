@@ -1,9 +1,9 @@
 <template>
   <div>
-    <b-button variant="primary" size="small" class="mb-4" @click="goToForm">Add Post</b-button>
+    <b-button variant="primary" size="small" class="mb-4" @click="goToCreateForm">Add Post</b-button>
     <b-table striped hover :fields="fields" :items="posts">
       <template v-slot:cell(actions)="row">
-        <b-button variant="warning" size="small" class="mr-2" @click="goToForm">Edit</b-button>
+        <b-button variant="warning" size="small" class="mr-2" @click="goToEditForm(row.item._id)">Edit</b-button>
         <b-button variant="danger" size="small" @click="onDelete(row.item._id)">Delete</b-button>
       </template>
     </b-table>
@@ -64,12 +64,21 @@ export default class PostList extends Vue {
   }
 
   /**
-   * Go to form page
+   * Go to create form page
    *
    * @returns {void}
    */
-  public goToForm(): void {
-    this.$router.push({ name: 'PostForm' });
+  public goToCreateForm(): void {
+    this.$router.push({ name: 'PostCreate' });
+  }
+
+  /**
+   * Go to edit form page
+   *
+   * @returns {void}
+   */
+  public goToEditForm(id: ObjectId): void {
+    this.$router.push({ name: 'PostEdit', params: { id } });
   }
 
   /**
