@@ -6,6 +6,9 @@ default: &defaults
 jobs:
   build:
     <<: *defaults
+    environment:
+      VUE_PORT: 8080
+      NGINX_PORT: 80
     steps:
       - checkout
       - restore_cache:
@@ -22,6 +25,9 @@ jobs:
 
   lint:
     <<: *defaults
+    environment:
+      VUE_PORT: 8080
+      NGINX_PORT: 80
     steps:
       - checkout
       - restore_cache:
