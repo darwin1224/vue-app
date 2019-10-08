@@ -48,7 +48,15 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/post/create',
-    name: 'PostForm',
+    name: 'PostCreate',
+    component: PostForm,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/post/edit/:id',
+    name: 'PostEdit',
     component: PostForm,
     meta: {
       requiresAuth: true
