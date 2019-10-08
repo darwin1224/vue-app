@@ -1,9 +1,10 @@
 import Vue from 'vue';
-import Router, { RouteConfig, RouterOptions, RouterMode } from 'vue-router';
+import Router, { RouteConfig, RouterOptions, RouterMode, Route } from 'vue-router';
 import Login from '@/pages/Auth/Login.vue';
 import Register from '@/pages/Auth/Register.vue';
 import PostList from '@/pages/Post/PostList.vue';
 import PostForm from '@/pages/Post/PostForm.vue';
+import { NextRouter } from '@/types/routers';
 
 Vue.use(Router);
 
@@ -31,14 +32,20 @@ const routes: RouteConfig[] = [
     component: Register
   },
   {
-    path: '/',
+    path: '/post',
     name: 'PostList',
-    component: PostList
+    component: PostList,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/post/create',
     name: 'PostForm',
-    component: PostForm
+    component: PostForm,
+    meta: {
+      requiresAuth: true
+    }
   }
 ];
 
@@ -47,10 +54,42 @@ const routes: RouteConfig[] = [
  *
  * @type {RouterOptions}
  */
-const router: RouterOptions = {
+const routerOptions: RouterOptions = {
   mode,
   base: process.env.BASE_URL,
   routes
 };
 
-export default new Router(router);
+/**
+ * Router instance
+ *
+ * @type {Router}
+ */
+const router: Router = new Router(routerOptions);
+
+/**
+ * Global navigation guard
+ */
+router.beforeEach((to: Route, from: Route, next: NextRouter): any => {
+  /**
+   * If has meta requiresAuth and API_TOKEN key in localStorage is null,
+   * will be redirected to /login
+   */
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (localStorage.getItem('API_TOKEN') === null) {
+      next({ name: 'Login' });
+    }
+    next();
+  }
+
+  /**
+   * If API_TOKEY key in localStorage is not null,
+   * will be redirected to /post
+   */
+  if (localStorage.getItem('API_TOKEN') !== null) {
+    next({ name: 'PostList' });
+  }
+  next();
+});
+
+export default router;
