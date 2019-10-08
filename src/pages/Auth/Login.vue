@@ -1,10 +1,14 @@
 <template>
   <div>
-    <form @submit.prevent="onLogin">
-      <input type="text" v-model="login.username" placeholder="Enter Username" />
-      <input type="password" v-model="login.password" placeholder="Enter Password" />
-      <input type="submit" value="Login" />
-    </form>
+    <b-form @submit.prevent="onLogin">
+      <b-form-group>
+        <b-form-input v-model="login.username" required placeholder="Enter Username"></b-form-input>
+      </b-form-group>
+      <b-form-group>
+        <b-form-input v-model="login.password" required placeholder="Enter Password"></b-form-input>
+      </b-form-group>
+      <b-button type="submit" variant="primary">Sign In</b-button>
+    </b-form>
   </div>
 </template>
 

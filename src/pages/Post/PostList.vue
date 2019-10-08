@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button variant="primary" size="small" @click="goToForm">Add Post</b-button>
+    <b-button variant="primary" size="small" class="mb-4" @click="goToForm">Add Post</b-button>
     <b-table striped hover :fields="fields" :items="posts">
       <template v-slot:cell(actions)="row">
         <b-button variant="warning" size="small" class="mr-2" @click="goToForm">Edit</b-button>

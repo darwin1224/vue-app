@@ -1,11 +1,15 @@
 <template>
   <div>
-    <form @submit.prevent="onSubmit" autocomplete="off">
-      <input type="text" v-model="post.title" placeholder="Enter Title" />
-      <textarea v-model="post.body"></textarea>
-      <input type="submit" value="Save" />
-      <b-button variant="light" size="small" @click="goBack">Back</b-button>
-    </form>
+    <b-form @submit.prevent="onSubmit">
+      <b-form-group>
+        <b-form-input v-model="post.title" required placeholder="Enter Title"></b-form-input>
+      </b-form-group>
+      <b-form-group>
+        <b-form-input v-model="post.body" required placeholder="Enter Body"></b-form-input>
+      </b-form-group>
+      <b-button type="submit" variant="primary" class="mr-2">Save</b-button>
+      <b-button variant="light" @click="goBack">Back</b-button>
+    </b-form>
   </div>
 </template>
 
@@ -47,3 +51,11 @@ export default class PostForm extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+$btn-light-border-color: #a5a5a5;
+
+.btn-light {
+  border: 1px solid $btn-light-border-color;
+}
+</style>
