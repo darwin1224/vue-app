@@ -6,6 +6,7 @@ import { PostModel, ObjectId } from '@/types/models';
 import { GET_POST } from '../getter-types';
 import { SET_POST, SET_POST_BY_ID, INSERT_PORT, DELETE_POST } from '../mutation-types';
 import { getAllPost, getPostById, insertPost, deletePost } from '../action-types';
+import { config } from '@/config/axios';
 
 /**
  * State lists
@@ -106,11 +107,7 @@ const actions: ActionTree<PostState, RootState> = {
    */
   async [getAllPost]({ commit }: ActionContext<PostState, RootState>, vm: _Vue): Promise<PostModel> {
     try {
-      const { data } = await vm.$http.get('/post', {
-        headers: {
-          Authorization: localStorage.getItem('API_TOKEN')
-        }
-      });
+      const { data } = await vm.$http.get('/post', config);
       commit(SET_POST, data);
       return data;
     } catch (err) {
@@ -127,7 +124,7 @@ const actions: ActionTree<PostState, RootState> = {
    */
   async [getPostById]({ commit }: ActionContext<PostState, RootState>, vm: _Vue): Promise<PostModel> {
     try {
-      const { data } = await vm.$http.get('/post/1');
+      const { data } = await vm.$http.get('/post/1', config);
       commit(SET_POST_BY_ID, data);
       return data;
     } catch (err) {
@@ -143,11 +140,7 @@ const actions: ActionTree<PostState, RootState> = {
    */
   async [insertPost]({ commit }: ActionContext<PostState, RootState>, payload: PostModel): Promise<PostModel> {
     try {
-      const { data } = await vm.$http.post('/post', payload, {
-        headers: {
-          Authorization: localStorage.getItem('API_TOKEN')
-        }
-      });
+      const { data } = await vm.$http.post('/post', payload, config);
       commit(INSERT_PORT, data);
       return data;
     } catch (err) {
@@ -164,11 +157,7 @@ const actions: ActionTree<PostState, RootState> = {
    */
   async [deletePost]({ commit }: ActionContext<PostState, RootState>, id: ObjectId): Promise<PostModel> {
     try {
-      const { data } = await vm.$http.delete(`/post/${id}`, {
-        headers: {
-          Authorization: localStorage.getItem('API_TOKEN')
-        }
-      });
+      const { data } = await vm.$http.delete(`/post/${id}`, config);
       commit(DELETE_POST, id);
       return data;
     } catch (err) {
