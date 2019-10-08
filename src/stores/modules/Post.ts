@@ -32,9 +32,9 @@ const getters: GetterTree<PostState, RootState> = {
    * Get the post list
    *
    * @param {PostState} state
-   * @returns {PostModel[] | undefined}
+   * @returns {PostModel[]}
    */
-  [GET_POST]: (state: PostState): PostModel[] | undefined => state.list
+  [GET_POST]: (state: PostState): PostModel[] => state.list
 };
 
 /**
@@ -70,10 +70,10 @@ const mutations: MutationTree<PostState> = {
    *
    * @param {PostState} state
    * @param {PostModel} payload
-   * @returns {PostModel[] | undefined}
+   * @returns {PostModel[]}
    */
-  [INSERT_PORT]: (state: PostState, payload: PostModel): PostModel[] | undefined => {
-    return (state.list = state.list && state.list.concat(payload));
+  [INSERT_PORT]: (state: PostState, payload: PostModel): PostModel[] => {
+    return (state.list = state.list.concat(payload));
   },
 
   /**
@@ -81,14 +81,12 @@ const mutations: MutationTree<PostState> = {
    *
    * @param {PostState} state
    * @param {ObjectId} id
-   * @returns {PostModel[] | undefined}
+   * @returns {PostModel[]}
    */
-  [DELETE_POST]: (state: PostState, id: ObjectId): PostModel[] | undefined => {
-    return (state.list =
-      state.list &&
-      state.list.filter(item => {
-        return item._id !== id;
-      }));
+  [DELETE_POST]: (state: PostState, id: ObjectId): PostModel[] => {
+    return (state.list = state.list.filter(item => {
+      return item._id !== id;
+    }));
   }
 };
 

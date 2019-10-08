@@ -14,7 +14,7 @@ export interface PostState {
    *
    * @type {PostModel[]}
    */
-  list?: PostModel[];
+  list: PostModel[];
 }
 
 /**
