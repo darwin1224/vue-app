@@ -1,11 +1,11 @@
 import _Vue from 'vue';
 import vm from '@/main';
 import { ActionTree, GetterTree, MutationTree, Module, ActionContext } from 'vuex';
-import { PostState, RootState } from '@/types/stores';
+import { PostState, RootState, GetById, UpdateById } from '@/types/stores';
 import { PostModel, ObjectId } from '@/types/models';
-import { GET_POST } from '../getter-types';
-import { SET_POST, SET_POST_BY_ID, INSERT_PORT, DELETE_POST } from '../mutation-types';
-import { getAllPost, getPostById, insertPost, deletePost } from '../action-types';
+import { GET_POST, GET_POST_BY_ID } from '../getter-types';
+import { SET_POST, SET_POST_BY_ID, INSERT_PORT, DELETE_POST, UPDATE_POST } from '../mutation-types';
+import { getAllPost, getPostById, insertPost, deletePost, updatePost } from '../action-types';
 import { config } from '@/config/axios';
 
 /**
@@ -19,7 +19,14 @@ const state: PostState = {
    *
    * @type {PostModel[]}
    */
-  list: []
+  list: [],
+
+  /**
+   * Post list by id
+   *
+   * @type {PostModel}
+   */
+  listById: {}
 };
 
 /**
@@ -34,7 +41,15 @@ const getters: GetterTree<PostState, RootState> = {
    * @param {PostState} state
    * @returns {PostModel[]}
    */
-  [GET_POST]: (state: PostState): PostModel[] => state.list
+  [GET_POST]: (state: PostState): PostModel[] => state.list,
+
+  /**
+   * Get the post list by id
+   *
+   * @param {PostState} state
+   * @returns {PostModel}
+   */
+  [GET_POST_BY_ID]: (state: PostState): PostModel => state.listById
 };
 
 /**
@@ -58,11 +73,11 @@ const mutations: MutationTree<PostState> = {
    * Set the payload to the post list by id
    *
    * @param {PostState} state
-   * @param {PostModel[]} payload
-   * @returns {PostModel[]}
+   * @param {PostModel} payload
+   * @returns {PostModel}
    */
-  [SET_POST_BY_ID]: (state: PostState, payload: PostModel[]): PostModel[] => {
-    return (state.list = payload);
+  [SET_POST_BY_ID]: (state: PostState, payload: PostModel): PostModel => {
+    return (state.listById = payload);
   },
 
   /**
@@ -131,12 +146,13 @@ const actions: ActionTree<PostState, RootState> = {
    * Get post data by id
    *
    * @param {ActionContext<PostState, RootState>} context.commit
-   * @param {_Vue} vm
+   * @param {GetById} payload.id
+   * @param {GetById} payload.vm
    * @returns {Promise<PostModel>}
    */
-  async [getPostById]({ commit }: ActionContext<PostState, RootState>, vm: _Vue): Promise<PostModel> {
+  async [getPostById]({ commit }: ActionContext<PostState, RootState>, { id, vm }: GetById): Promise<PostModel> {
     try {
-      const { data } = await vm.$http.get('/post/1', config);
+      const { data } = await vm.$http.get(`/post/${id}`, config);
       commit(SET_POST_BY_ID, data);
       return data;
     } catch (err) {
@@ -148,6 +164,7 @@ const actions: ActionTree<PostState, RootState> = {
    * Insert data
    *
    * @param {ActionContext<PostState, RootState>} context.commit
+   * @param {PostModel} payload
    * @returns {Promise<PostModel>}
    */
   async [insertPost]({ commit }: ActionContext<PostState, RootState>, payload: PostModel): Promise<PostModel> {
