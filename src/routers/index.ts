@@ -22,6 +22,10 @@ const mode: RouterMode = 'history';
  */
 const routes: RouteConfig[] = [
   {
+    path: '/',
+    redirect: '/post'
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login,
