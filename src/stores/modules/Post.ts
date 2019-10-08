@@ -77,6 +77,20 @@ const mutations: MutationTree<PostState> = {
   },
 
   /**
+   * Update the post list according to the payload given
+   *
+   * @param {PostState} state
+   * @param {PostModel} payload
+   * @returns {PostModel[] | undefined}
+   */
+  [UPDATE_POST]: (state: PostState, payload: PostModel): PostModel[] | undefined => {
+    const index = state.list.findIndex(index => index._id === payload._id);
+    if (index !== 1) {
+      return state.list.splice(index, 1, payload);
+    }
+  },
+
+  /**
    * Delete according the id given from the post list
    *
    * @param {PostState} state
@@ -140,6 +154,24 @@ const actions: ActionTree<PostState, RootState> = {
     try {
       const { data } = await vm.$http.post('/post', payload, config);
       commit(INSERT_PORT, data);
+      return data;
+    } catch (err) {
+      return err;
+    }
+  },
+
+  /**
+   * Update data by id
+   *
+   * @param {ActionContext<PostState, RootState>} context.commit
+   * @param {UpdateById} payload.id
+   * @param {UpdateById} payload.params
+   * @returns {Promise<PostModel>}
+   */
+  async [updatePost]({ commit }: ActionContext<PostState, RootState>, { id, params }: UpdateById): Promise<PostModel> {
+    try {
+      const { data } = await vm.$http.put(`/post/${id}`, params, config);
+      commit(UPDATE_POST, data);
       return data;
     } catch (err) {
       return err;
