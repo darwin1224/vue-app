@@ -24,7 +24,10 @@ const routes: RouteConfig[] = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: {
+      hasToken: true
+    }
   },
   {
     path: '/register',
@@ -83,11 +86,13 @@ router.beforeEach((to: Route, from: Route, next: NextRouter): any => {
   }
 
   /**
-   * If API_TOKEY key in localStorage is not null,
+   * If has meta hasToken and API_TOKEY key in localStorage is not null,
    * will be redirected to /post
    */
-  if (localStorage.getItem('API_TOKEN') !== null) {
-    next({ name: 'PostList' });
+  if (to.matched.some(record => record.meta.hasToken)) {
+    if (localStorage.getItem('API_TOKEN') !== null) {
+      next({ name: 'PostList' });
+    }
   }
   next();
 });
